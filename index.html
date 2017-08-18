@@ -1,0 +1,47 @@
+<html>
+<body>
+
+<canvas id="myCanvas" width="200" height="100"></canvas>
+<img id="image" src="seating.jpg" style="display:none;"/>
+
+<script>
+window.onload = function() {
+    var img = document.getElementById("image");
+	console.log(img.height);
+	console.log(img.width);
+	
+	var scale = .5;
+	var canvas = document.getElementById("myCanvas");
+    var ctx = canvas.getContext("2d");
+
+	canvas.width = img.width * scale;
+	canvas.height = img.height * scale;
+	ctx.scale(scale,scale);
+    ctx.drawImage(img, 0, 0);
+
+	canvas.addEventListener("click", function(e) {
+		var element = canvas;
+		var offsetX = 0, offsetY = 0
+
+		if (element.offsetParent) {
+		  do {
+			offsetX += element.offsetLeft;
+			offsetY += element.offsetTop;
+		  } while ((element = element.offsetParent));
+		}
+
+		x = e.pageX - offsetX;
+		y = e.pageY - offsetY;
+		
+		ctx.drawImage(img, 0, 0);
+		
+		ctx.beginPath();
+		ctx.arc(x / scale, y / scale, 50, 0, 2 * Math.PI);
+		ctx.fillStyle = 'yellow';
+		ctx.fill();
+		ctx.stroke();
+	}, false);
+};
+</script>
+</body>
+</html>
