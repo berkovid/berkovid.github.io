@@ -9,6 +9,10 @@
         var img = document.getElementById("image");
         var canvas = document.getElementById("myCanvas");
         var output = document.getElementById("output");
+        output.addEventListener("load", function () {
+            canvas.style.display = 'none';
+            output.style.display = 'block';
+        });
 
         var scale = Math.min(document.body.clientWidth / img.width, document.body.clientHeight / img.height);
         console.log("Scale: " + scale);
@@ -35,24 +39,22 @@
             var x = e.pageX - offsetX;
             var y = e.pageY - offsetY;
 
-/*
-            ctx.clearRect(0, 0, canvas.width / scale, canvas.height / scale);
-            ctx.fillStyle = 'white';
-            ctx.fillRect(0, 0, canvas.width / scale, canvas.height / scale);
-            ctx.drawImage(img, 0, 0);
-            ctx.beginPath();
-            ctx.arc(x / scale, y / scale, 50, 0, 2 * Math.PI);
-            ctx.fillStyle = 'yellow';
-            ctx.fill();
-            ctx.stroke();
-
-            console.log("encoding...");
-            var data = canvas.toDataURL("image/png");
-            var encodedPng = data.substring(data.indexOf(',') + 1, data.length);
-
-            console.log(parseInt(x / scale) + "," + parseInt(y / scale) + "_" + encodedPng);
-            console.log(data.length);
-*/
+            /*
+             ctx.clearRect(0, 0, canvas.width / scale, canvas.height / scale);
+             ctx.fillStyle = 'white';
+             ctx.fillRect(0, 0, canvas.width / scale, canvas.height / scale);
+             ctx.drawImage(img, 0, 0);
+             ctx.beginPath();
+             ctx.arc(x / scale, y / scale, 50, 0, 2 * Math.PI);
+             ctx.fillStyle = 'yellow';
+             ctx.fill();
+             ctx.stroke();
+             console.log("encoding...");
+             var data = canvas.toDataURL("image/png");
+             var encodedPng = data.substring(data.indexOf(',') + 1, data.length);
+             console.log(parseInt(x / scale) + "," + parseInt(y / scale) + "_" + encodedPng);
+             console.log(data.length);
+             */
 
             var bestDist = 99999;
             var bestImg = "";
@@ -70,8 +72,6 @@
                 }
             }
             output.src = "seat/" + bestImg;
-            output.style.display='block';
-            canvas.style.display = 'none';
 
         }, false);
     };
