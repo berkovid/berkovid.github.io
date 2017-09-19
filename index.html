@@ -1,47 +1,119 @@
 <html>
 <body>
-
-<canvas id="myCanvas" width="200" height="100"></canvas>
-<img id="image" src="seating.jpg" style="display:none;"/>
-
+<canvas id="myCanvas"></canvas>
+<img id="image" src="seating.svg" style="display:none;"/>
+<img id="output" onclick="this.style.display='none'; document.getElementById('myCanvas').style.display='block'"/>
 <script>
-window.onload = function() {
-    var img = document.getElementById("image");
-	console.log(img.height);
-	console.log(img.width);
-	
-	var scale = .5;
-	var canvas = document.getElementById("myCanvas");
-    var ctx = canvas.getContext("2d");
+    draw = function () {
+        var img = document.getElementById("image");
+        var canvas = document.getElementById("myCanvas");
+        var output = document.getElementById("output");
 
-	canvas.width = img.width * scale;
-	canvas.height = img.height * scale;
-	ctx.scale(scale,scale);
-    ctx.drawImage(img, 0, 0);
+        var scale = Math.min(document.body.clientWidth / img.width, document.body.clientHeight / img.height);
+        console.log("Scale: " + scale);
+        canvas.style.display = 'block';
+        var ctx = canvas.getContext("2d");
 
-	canvas.addEventListener("click", function(e) {
-		var element = canvas;
-		var offsetX = 0, offsetY = 0
+        canvas.width = img.width * scale;
+        canvas.height = img.height * scale;
+        ctx.scale(scale, scale);
+        ctx.drawImage(img, 0, 0);
 
-		if (element.offsetParent) {
-		  do {
-			offsetX += element.offsetLeft;
-			offsetY += element.offsetTop;
-		  } while ((element = element.offsetParent));
-		}
+        output.width = canvas.width;
+        output.height = canvas.height;
 
-		x = e.pageX - offsetX;
-		y = e.pageY - offsetY;
-		
-		ctx.drawImage(img, 0, 0);
-		
-		ctx.beginPath();
-		ctx.arc(x / scale, y / scale, 50, 0, 2 * Math.PI);
-		ctx.fillStyle = 'yellow';
-		ctx.fill();
-		ctx.stroke();
-	}, false);
-};
+        canvas.addEventListener("click", function (e) {
+            var element = canvas;
+            var offsetX = 0, offsetY = 0;
+            if (element.offsetParent) {
+                do {
+                    offsetX += element.offsetLeft;
+                    offsetY += element.offsetTop;
+                } while ((element = element.offsetParent));
+            }
+            var x = e.pageX - offsetX;
+            var y = e.pageY - offsetY;
+
+/*
+            ctx.clearRect(0, 0, canvas.width / scale, canvas.height / scale);
+            ctx.fillStyle = 'white';
+            ctx.fillRect(0, 0, canvas.width / scale, canvas.height / scale);
+            ctx.drawImage(img, 0, 0);
+            ctx.beginPath();
+            ctx.arc(x / scale, y / scale, 50, 0, 2 * Math.PI);
+            ctx.fillStyle = 'yellow';
+            ctx.fill();
+            ctx.stroke();
+
+            console.log("encoding...");
+            var data = canvas.toDataURL("image/png");
+            var encodedPng = data.substring(data.indexOf(',') + 1, data.length);
+
+            console.log(parseInt(x / scale) + "," + parseInt(y / scale) + "_" + encodedPng);
+            console.log(data.length);
+*/
+
+            var bestDist = 99999;
+            var bestImg = "";
+            for (var i = 0; i < map.length; i++) {
+                var x2 = map[i][0] * scale;
+                var y2 = map[i][1] * scale;
+                var img = map[i][2];
+
+                var dist = Math.sqrt(Math.pow(x - x2, 2) + Math.pow(y - y2, 2));
+                //console.log(x + ", " + y + " - " + x2 + ", " + y2 + " - " + dist);
+
+                if (dist < bestDist) {
+                    bestDist = dist;
+                    bestImg = img;
+                }
+            }
+            output.src = "seat/" + bestImg;
+            output.style.display='block';
+            canvas.style.display = 'none';
+
+        }, false);
+    };
+
+    var map = [
+        [791, 1042, "01_01.png"],
+        [817, 898, "01_02.png"],
+        [903, 791, "01_03.png"],
+        [1079, 732, "01_04.png"],
+        [1256, 785, "01_05.png"],
+        [1363, 908, "01_06.png"],
+        [1384, 1047, "01_07.png"],
+        [488, 994, "02_01.png"],
+        [544, 849, "02_02.png"],
+        [588, 711, "02_03.png"],
+        [711, 599, "02_04.png"],
+        [855, 533, "02_05.png"],
+        [999, 511, "02_06.png"],
+        [1133, 505, "02_07.png"],
+        [1422, 549, "02_08.png"],
+        [1527, 655, "02_09.png"],
+        [1594, 766, "02_10.png"],
+        [1655, 888, "02_11.png"],
+        [1688, 1033, "02_12.png"],
+        [244, 933, "03_01.png"],
+        [272, 755, "03_02.png"],
+        [322, 611, "03_03.png"],
+        [405, 472, "03_04.png"],
+        [605, 327, "03_05.png"],
+        [772, 233, "03_06.png"],
+        [922, 183, "03_07.png"],
+        [1099, 183, "03_08.png"],
+        [1272, 199, "03_09.png"],
+        [1438, 249, "03_10.png"],
+        [1583, 316, "03_11.png"],
+        [1699, 411, "03_12.png"],
+        [1838, 577, "03_13.png"],
+        [1910, 722, "03_14.png"],
+        [1966, 849, "03_15.png"],
+        [1971, 1016, "03_16.png"],
+    ];
+
+    window.onload = draw;
 </script>
 </body>
 </html>
